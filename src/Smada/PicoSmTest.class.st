@@ -7,7 +7,9 @@ Class {
 		'sourceClass',
 		'doctorClass',
 		'patientClass',
-		'medicalRecordClass'
+		'medicalRecordClass',
+		'noteClass',
+		'stringClass'
 	],
 	#category : #'Smada-Sm Example'
 }
@@ -39,6 +41,18 @@ PicoSmTest >> defineMedicalRecord [
 ]
 
 { #category : #running }
+PicoSmTest >> defineNote [
+	
+	"now we pay attention to really use the non abstract metaclass"
+	noteClass := picoClass
+		send: #createClassNamed:inheritsFrom:instVars:
+		withArguments:
+			{#SmNote.
+			#PicoObject.
+			#(contentHistory)}.
+]
+
+{ #category : #running }
 PicoSmTest >> definePatient [
 
 	
@@ -65,6 +79,18 @@ PicoSmTest >> defineSource [
 ]
 
 { #category : #running }
+PicoSmTest >> defineString [
+	
+	"now we pay attention to really use the non abstract metaclass"
+	stringClass := picoClass
+		send: #createClassNamed:inheritsFrom:instVars:
+		withArguments:
+			{#SmString.
+			#PicoObject.
+			#(content)}.
+]
+
+{ #category : #running }
 PicoSmTest >> setUp [ 
 	super setUp.
 	PicoBlop bootstrap.
@@ -74,7 +100,9 @@ PicoSmTest >> setUp [
 	self defineSource.
 	self definePatient.
 	self defineDoctor.
-	self defineMedicalRecord
+	self defineString.
+	self defineNote.
+	self defineMedicalRecord.
 
 ]
 
@@ -124,6 +152,54 @@ PicoSmTest >> testMedicalRecordIsCreatedByAPatientLowLevel [
 	
 	"the following test shows that owner is primitive potentially not accessible from the language (high level)"
 	self assert: m1 picoOwner equals: p
+]
+
+{ #category : #'test - notes' }
+PicoSmTest >> testNote [
+
+	|note doctor|
+	note := noteClass send: #new.
+	doctor := doctorClass send: #new.
+	doctor send: #id: withArguments: { #Doctor1}.
+
+	note send: #content:by: withArguments: {'Grippe' . doctor}.
+	self assert: (note send: #contentHistory) size equals: 1.
+	self assert: ((note send: #content) send: #content) equals: 'Grippe'.
+	self assert: ((note send: #content) send: #owner) equals: doctor. 
+	
+]
+
+{ #category : #'test - notes' }
+PicoSmTest >> testNoteContentHistoryInitialisation [
+
+	|note |
+	note := noteClass send: #new.
+	self assert: (note send: #contentHistory) class equals: OrderedCollection
+	
+]
+
+{ #category : #'test - notes' }
+PicoSmTest >> testNoteModification [
+
+	|note doctor doctor2|
+	
+	note := noteClass send: #new.
+	doctor := doctorClass send: #new.
+	doctor2 := doctorClass send: #new.
+	doctor send: #id: withArguments: { #Doctor1}.
+	doctor2 send: #id: withArguments: { #Doctor2}.
+
+	note send: #content:by: withArguments: {'Grippe' . doctor}.
+	self assert: (note send: #owner) equals: doctor.
+	note send: #content:by: withArguments: {'Grippe H1N1' . doctor2}.
+	
+	self assert: (note send: #contentHistory) size equals: 2.
+	self assert: ((note send: #content) send: #content) equals: 'Grippe H1N1'.
+	self assert: ((note send: #content) send: #owner) equals: doctor2. 
+	self assert: (note send: #owner) equals: doctor2.
+	
+	self assert: ((note send: #contentHistory) first send: #content) equals: 'Grippe'.
+	self assert: ((note send: #contentHistory) first send: #owner) equals: doctor. 
 ]
 
 { #category : #'test - basics' }
