@@ -40,6 +40,14 @@ SmSourceCode >> initialize [
 ]
 
 { #category : #initialization }
+SmSourceCode >> invalidate [
+   
+   super send: #invalidate.
+	(self send: #createdData) do: [:each | each ifNotNil: [ each send: #invalidate]].	
+		
+]
+
+{ #category : #initialization }
 SmSourceCode >> isSource [
 	^ true
 ]
