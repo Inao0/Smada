@@ -3,7 +3,8 @@ Class {
 	#superclass : #Array,
 	#type : #variable,
 	#instVars : [
-		'owner'
+		'owner',
+		'valid'
 	],
 	#classInstVars : [
 		'picoEnvironment'
@@ -181,6 +182,7 @@ PicoBlop >> create: aClassName with: aDictionary [
 			inst setValueOfInstanceVariable: k to: v 
 			].
 	inst privateOwnedBySetter: self.
+	(self send: #isSource) ifTrue: [ self send: #create: withArguments: {inst}].
 	^ inst
 ]
 
@@ -421,6 +423,7 @@ PicoBlop >> send: aSelector withArguments: anArray [
 						self fillUpGlobalEnvironmentOf: interpreter. 
 						interpreter
 								globalEnvironmentAt: #OrderedCollection put: OrderedCollection;
+								globalEnvironmentAt: #WeakOrderedCollection put: WeakOrderedCollection;
 								globalEnvironmentAt: #IdentityDictionary put: IdentityDictionary;
 								globalEnvironmentAt: #PicoBlop put: PicoBlop;
 								execute: method

@@ -49,13 +49,19 @@ PicoObjectCode >> isMetaclass [
 	^ false
 ]
 
+{ #category : #'sm data' }
+PicoObjectCode >> isSource [
+
+	^ false
+]
+
 { #category : #testing }
 PicoObjectCode >> klass [
 
 	^ self picoClass 
 ]
 
-{ #category : #testing }
+{ #category : #'sm data' }
 PicoObjectCode >> owner [
 
 	^ self picoOwner 

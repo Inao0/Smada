@@ -3,10 +3,23 @@ Class {
 	#superclass : #PicoCodeRepository,
 	#type : #variable,
 	#instVars : [
-		'id'
+		'id',
+		'createdData'
 	],
 	#category : #'Smada-Sm Example'
 }
+
+{ #category : #accessing }
+SmSourceCode >> create: aPieceOfData [
+	
+	createdData add: aPieceOfData
+]
+
+{ #category : #accessing }
+SmSourceCode >> createdData [
+	
+	^ createdData 
+]
 
 { #category : #accessing }
 SmSourceCode >> id [ 
@@ -18,4 +31,14 @@ SmSourceCode >> id [
 SmSourceCode >> id: aSymbol [
 	
 	id := aSymbol
+]
+
+{ #category : #initialization }
+SmSourceCode >> initialize [
+	createdData := WeakOrderedCollection new.
+]
+
+{ #category : #initialization }
+SmSourceCode >> isSource [
+	^ true
 ]

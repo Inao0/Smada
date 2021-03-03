@@ -75,7 +75,7 @@ PicoSmTest >> defineSource [
 		withArguments:
 			{#SmSource.
 			#PicoObject.
-			#(id)}.
+			#(id createdData)}.
 ]
 
 { #category : #running }
@@ -165,7 +165,7 @@ PicoSmTest >> testNote [
 	note send: #content:by: withArguments: {'Grippe' . doctor}.
 	self assert: (note send: #contentHistory) size equals: 1.
 	self assert: ((note send: #content) send: #content) equals: 'Grippe'.
-	self assert: ((note send: #content) send: #owner) equals: doctor. 
+	self assert: ((note send: #content) send: #owner) equals: doctor.
 	
 ]
 
