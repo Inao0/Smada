@@ -250,6 +250,24 @@ PicoSmTest >> testSourceIdSetAndGet [
 ]
 
 { #category : #'test - validity' }
+PicoSmTest >> testSourceInvalidationIsPropagating [
+	|source obj2|
+	source := sourceClass send: #new.
+	self assert: (source send: #isValid).  
+	
+	
+	source create: #PicoObject with: {}.
+	obj2 := source create: #PicoObject with: {}.
+	source create: #PicoObject with: {}.
+	
+	source send: #invalidate.
+
+	self assert: (source send: #isValid) equals: false.
+	self assert: (obj2 send: #isValid) equals: false.
+	(source send: #createdData ) do: [ :item | item ifNotNil: [self assert: (item send: #isValid) equals: false.]].
+]
+
+{ #category : #'test - validity' }
 PicoSmTest >> testSourceValidityInitialization [
 	|source|
 	source := sourceClass send: #new.
