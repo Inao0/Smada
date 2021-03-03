@@ -106,6 +106,12 @@ PicoSmTest >> setUp [
 
 ]
 
+{ #category : #'test - validity' }
+PicoSmTest >> testClassValidityInitialization [
+
+	self assert: (picoClass send: #isValid).  
+]
+
 { #category : #'test - basics' }
 PicoSmTest >> testDoctorNameAndIdSetAndGet [
 
@@ -113,6 +119,26 @@ PicoSmTest >> testDoctorNameAndIdSetAndGet [
 	s1 := doctorClass send: #new.
 	s1 send: #id: withArguments: { #Source1}.
 	self assert: (s1 send: #id) equals: #Source1
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testInvalidationHighLevel [
+	|obj|
+	obj := picoObject send: #new.
+	self assert: (obj send: #isValid).  
+	
+	obj send: #invalidate.
+   self assert: (obj send: #isValid) equals: false.  
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testInvalidationLowLevel [
+	|obj|
+	obj := picoObject send: #new.
+	self assert: (obj send: #isValid).  
+	
+	obj invalidate.
+   self assert: (obj send: #isValid) equals: false.  
 ]
 
 { #category : #'test - basics' }
@@ -202,6 +228,18 @@ PicoSmTest >> testNoteModification [
 	self assert: ((note send: #contentHistory) first send: #owner) equals: doctor. 
 ]
 
+{ #category : #'test - validity' }
+PicoSmTest >> testPicoObjectClassValidityInitialization [
+
+	self assert: (picoObject  send: #isValid).  
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testSourceClassValidityInitialization [
+
+	self assert: (sourceClass send: #isValid).  
+]
+
 { #category : #'test - basics' }
 PicoSmTest >> testSourceIdSetAndGet [
 
@@ -209,4 +247,18 @@ PicoSmTest >> testSourceIdSetAndGet [
 	s1 := sourceClass send: #new.
 	s1 send: #id: withArguments: { #Source1}.
 	self assert: (s1 send: #id) equals: #Source1
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testSourceValidityInitialization [
+	|source|
+	source := sourceClass send: #new.
+	self assert: (source send: #isValid).  
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testValidityInitialization [
+	|obj|
+	obj := picoObject send: #new.
+	self assert: (obj send: #isValid).  
 ]

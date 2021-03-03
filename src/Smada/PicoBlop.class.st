@@ -222,6 +222,19 @@ PicoBlop >> initializeMethodDictionaryFromCodeRepositoryFor: aSymbol [
 	
 ]
 
+{ #category : #'sm data' }
+PicoBlop >> initializeValidity [
+	self privateValidSetter: true.
+]
+
+{ #category : #'sm data' }
+PicoBlop >> invalidate [
+
+	^ self privateValidSetter: false.
+
+	
+]
+
 { #category : #lookup }
 PicoBlop >> lookup: selector [
 	"look for the method named <selector> starting in the receiver. 
@@ -391,6 +404,14 @@ PicoBlop >> picoSuperclassId: anObjClassId [
 	self at: self offsetForSuperclass put: anObjClassId
 ]
 
+{ #category : #'sm data' }
+PicoBlop >> picoValid [
+
+	^ valid
+
+	
+]
+
 { #category : #lookup }
 PicoBlop >> primitiveLookup: aSelector [
 
@@ -401,6 +422,14 @@ PicoBlop >> primitiveLookup: aSelector [
 PicoBlop >> privateOwnedBySetter: anOwner [
 
 	owner := anOwner
+
+	
+]
+
+{ #category : #'sm data' }
+PicoBlop >> privateValidSetter: aBoolean [
+
+	valid := aBoolean.
 
 	
 ]

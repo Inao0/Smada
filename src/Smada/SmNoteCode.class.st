@@ -28,6 +28,7 @@ SmNoteCode >> contentHistory [
 
 { #category : #initialization }
 SmNoteCode >> initialize [
+	super send: #initialize.
 	contentHistory := OrderedCollection new.
 ]
 

@@ -35,6 +35,7 @@ SmSourceCode >> id: aSymbol [
 
 { #category : #initialization }
 SmSourceCode >> initialize [
+	super send: #initialize.
 	createdData := WeakOrderedCollection new.
 ]
 
