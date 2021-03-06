@@ -182,6 +182,7 @@ PicoBlop >> create: aClassName with: aDictionary [
 			inst setValueOfInstanceVariable: k to: v 
 			].
 	inst privateOwnedBySetter: self.
+	inst privateValidSetter: self picoValid.
 	(self send: #isSource) ifTrue: [ self send: #create: withArguments: {inst}].
 	^ inst
 ]

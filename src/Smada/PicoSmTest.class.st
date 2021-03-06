@@ -122,6 +122,18 @@ PicoSmTest >> testDoctorNameAndIdSetAndGet [
 ]
 
 { #category : #'test - validity' }
+PicoSmTest >> testInvalidSourceCreateInvalidData [
+	|source obj|
+	source := sourceClass send: #new.
+	source send: #invalidate.
+	self assert: (source send: #isValid) equals: false.  
+	
+	obj := source create: #PicoObject with: {}.
+	self assert: (source send: #isValid) equals: false.
+
+]
+
+{ #category : #'test - validity' }
 PicoSmTest >> testInvalidationHighLevel [
 	|obj|
 	obj := picoObject send: #new.
@@ -272,6 +284,17 @@ PicoSmTest >> testSourceValidityInitialization [
 	|source|
 	source := sourceClass send: #new.
 	self assert: (source send: #isValid).  
+]
+
+{ #category : #'test - validity' }
+PicoSmTest >> testValidSourceCreateValidData [
+	|source obj|
+	source := sourceClass send: #new.
+	self assert: (source send: #isValid).  
+	
+	obj := source create: #PicoObject with: {}.
+	self assert: (source send: #isValid).
+
 ]
 
 { #category : #'test - validity' }
