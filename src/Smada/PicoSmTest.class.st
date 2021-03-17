@@ -67,6 +67,17 @@ PicoSmTest >> definePatient [
 ]
 
 { #category : #running }
+PicoSmTest >> defineSocialSecurityNumber [
+
+	socialSecurityNumberClass := picoClass
+		send: #createClassNamed:inheritsFrom:instVars:
+		withArguments:
+			{#SmSocialSecurityNumber.
+			#PicoObject.
+			#(number)}.
+]
+
+{ #category : #running }
 PicoSmTest >> defineSource [
 
 	
@@ -104,6 +115,7 @@ PicoSmTest >> setUp [
 	self defineString.
 	self defineNote.
 	self defineMedicalRecord.
+	self defineSocialSecurityNumber.
 
 ]
 
@@ -120,6 +132,22 @@ PicoSmTest >> testDoctorNameAndIdSetAndGet [
 	s1 := doctorClass send: #new.
 	s1 send: #id: withArguments: { #Source1}.
 	self assert: (s1 send: #id) equals: #Source1
+]
+
+{ #category : #'tests - social security number' }
+PicoSmTest >> testInitializedSocialSecurityNumber [
+
+	"comment stating purpose of instance-side message"
+	"scope: class-variables  &  instance-variables"	
+			
+	
+	|number source param|
+	source := sourceClass send: #new.
+	param := IdentityDictionary new.
+	param at: #number put: '185057800608436'.
+	number := source create: #SmSocialSecurityNumber with: param.
+	
+	self assert: (number send: #number) equals: '185057800608436'.
 ]
 
 { #category : #'test - validity' }
