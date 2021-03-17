@@ -3,7 +3,8 @@ Class {
 	#superclass : #Array,
 	#type : #variable,
 	#instVars : [
-		'owner'
+		'owner',
+		'valid'
 	],
 	#classInstVars : [
 		'picoEnvironment'
@@ -181,6 +182,8 @@ PicoBlop >> create: aClassName with: aDictionary [
 			inst setValueOfInstanceVariable: k to: v 
 			].
 	inst privateOwnedBySetter: self.
+	inst privateValidSetter: self picoValid.
+	(self send: #isSource) ifTrue: [ self send: #create: withArguments: {inst}].
 	^ inst
 ]
 
@@ -216,6 +219,27 @@ PicoBlop >> initializeMethodDictionaryFromCodeRepositoryFor: aSymbol [
 	self initializeMethodDictionaryFrom: (self class environment 
 			at: codeClass 
 			ifAbsent: [ self error: codeClass, ' does not seem to exist.' ] ).
+
+	
+]
+
+{ #category : #'sm data' }
+PicoBlop >> initializeValidity [
+	self privateValidSetter: true.
+]
+
+{ #category : #'sm data' }
+PicoBlop >> invalidate [
+
+	^ self privateValidSetter: false.
+
+	
+]
+
+{ #category : #'smdata - collections issues' }
+PicoBlop >> invalidateCollection: aCollection [
+
+	aCollection do:  [:each | each ifNotNil: [ each send: #invalidate]].
 
 	
 ]
@@ -294,7 +318,7 @@ PicoBlop >> offsetFromObjectOfInstanceVariable: aSymbol [
 	| aClass |
 	aClass := self picoClass.
 	(aClass picoIVs includes: aSymbol) 
-		ifFalse: [self error: 'The class ' , aClass objName asString
+		ifFalse: [self error: 'The class ' , aClass picoClassName asString
 						, ' does not define the instance variable ' , aSymbol asString].
 	^ aClass offsetFromClassOfInstanceVariable: aSymbol
 ]
@@ -389,6 +413,14 @@ PicoBlop >> picoSuperclassId: anObjClassId [
 	self at: self offsetForSuperclass put: anObjClassId
 ]
 
+{ #category : #'sm data' }
+PicoBlop >> picoValid [
+
+	^ valid
+
+	
+]
+
 { #category : #lookup }
 PicoBlop >> primitiveLookup: aSelector [
 
@@ -399,6 +431,23 @@ PicoBlop >> primitiveLookup: aSelector [
 PicoBlop >> privateOwnedBySetter: anOwner [
 
 	owner := anOwner
+
+	
+]
+
+{ #category : #'sm data' }
+PicoBlop >> privateValidSetter: aBoolean [
+
+	valid := aBoolean.
+
+	
+]
+
+{ #category : #'smdata - collections issues' }
+PicoBlop >> selectValid: aCollection [
+	|validCollection|
+	validCollection := aCollection select:  [ :each | each isNotNil and: (each picoValid)].
+	^ validCollection 
 
 	
 ]
@@ -421,6 +470,7 @@ PicoBlop >> send: aSelector withArguments: anArray [
 						self fillUpGlobalEnvironmentOf: interpreter. 
 						interpreter
 								globalEnvironmentAt: #OrderedCollection put: OrderedCollection;
+								globalEnvironmentAt: #WeakOrderedCollection put: WeakOrderedCollection;
 								globalEnvironmentAt: #IdentityDictionary put: IdentityDictionary;
 								globalEnvironmentAt: #PicoBlop put: PicoBlop;
 								execute: method

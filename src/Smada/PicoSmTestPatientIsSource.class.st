@@ -1,5 +1,5 @@
 Class {
-	#name : #PicoSmTest,
+	#name : #PicoSmTestPatientIsSource,
 	#superclass : #PicoTest,
 	#instVars : [
 		'picoClass',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : #running }
-PicoSmTest >> defineDoctor [
+PicoSmTestPatientIsSource >> defineDoctor [
 
 	
 	"now we pay attention to really use the non abstract metaclass"
@@ -29,7 +29,7 @@ PicoSmTest >> defineDoctor [
 ]
 
 { #category : #running }
-PicoSmTest >> defineMedicalRecord [
+PicoSmTestPatientIsSource >> defineMedicalRecord [
 
 	
 	"now we pay attention to really use the non abstract metaclass"
@@ -42,7 +42,7 @@ PicoSmTest >> defineMedicalRecord [
 ]
 
 { #category : #running }
-PicoSmTest >> defineNote [
+PicoSmTestPatientIsSource >> defineNote [
 	
 	"now we pay attention to really use the non abstract metaclass"
 	noteClass := picoClass
@@ -54,7 +54,7 @@ PicoSmTest >> defineNote [
 ]
 
 { #category : #running }
-PicoSmTest >> definePatient [
+PicoSmTestPatientIsSource >> definePatient [
 
 	
 	"now we pay attention to really use the non abstract metaclass"
@@ -62,12 +62,12 @@ PicoSmTest >> definePatient [
 		send: #createClassNamed:inheritsFrom:instVars:
 		withArguments:
 			{#SmPatient.
-			#PicoObject.
+			#SmSource.
 			#(name)}.
 ]
 
 { #category : #running }
-PicoSmTest >> defineSocialSecurityNumber [
+PicoSmTestPatientIsSource >> defineSocialSecurityNumber [
 
 	socialSecurityNumberClass := picoClass
 		send: #createClassNamed:inheritsFrom:instVars:
@@ -78,7 +78,7 @@ PicoSmTest >> defineSocialSecurityNumber [
 ]
 
 { #category : #running }
-PicoSmTest >> defineSource [
+PicoSmTestPatientIsSource >> defineSource [
 
 	
 	"now we pay attention to really use the non abstract metaclass"
@@ -91,7 +91,7 @@ PicoSmTest >> defineSource [
 ]
 
 { #category : #running }
-PicoSmTest >> defineString [
+PicoSmTestPatientIsSource >> defineString [
 	
 	"now we pay attention to really use the non abstract metaclass"
 	stringClass := picoClass
@@ -103,7 +103,7 @@ PicoSmTest >> defineString [
 ]
 
 { #category : #running }
-PicoSmTest >> setUp [ 
+PicoSmTestPatientIsSource >> setUp [ 
 	super setUp.
 	PicoBlop bootstrap.
 	picoClass := PicoBlop giveClassNamed: #PicoClass.
@@ -120,13 +120,13 @@ PicoSmTest >> setUp [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testClassValidityInitialization [
+PicoSmTestPatientIsSource >> testClassValidityInitialization [
 
 	self assert: (picoClass send: #isValid).  
 ]
 
 { #category : #'test - basics' }
-PicoSmTest >> testDoctorNameAndIdSetAndGet [
+PicoSmTestPatientIsSource >> testDoctorNameAndIdSetAndGet [
 
 	| s1 |
 	s1 := doctorClass send: #new.
@@ -134,24 +134,8 @@ PicoSmTest >> testDoctorNameAndIdSetAndGet [
 	self assert: (s1 send: #id) equals: #Source1
 ]
 
-{ #category : #'tests - social security number' }
-PicoSmTest >> testInitializedSocialSecurityNumber [
-
-	"comment stating purpose of instance-side message"
-	"scope: class-variables  &  instance-variables"	
-			
-	
-	|number source param|
-	source := sourceClass send: #new.
-	param := IdentityDictionary new.
-	param at: #number put: '185057800608436'.
-	number := source create: #SmSocialSecurityNumber with: param.
-	
-	self assert: (number send: #number) equals: '185057800608436'.
-]
-
 { #category : #'test - validity' }
-PicoSmTest >> testInvalidSourceCreateInvalidData [
+PicoSmTestPatientIsSource >> testInvalidSourceCreateInvalidData [
 	|source obj|
 	source := sourceClass send: #new.
 	source send: #invalidate.
@@ -163,7 +147,7 @@ PicoSmTest >> testInvalidSourceCreateInvalidData [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testInvalidationHighLevel [
+PicoSmTestPatientIsSource >> testInvalidationHighLevel [
 	|obj|
 	obj := picoObject send: #new.
 	self assert: (obj send: #isValid).  
@@ -173,7 +157,7 @@ PicoSmTest >> testInvalidationHighLevel [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testInvalidationLowLevel [
+PicoSmTestPatientIsSource >> testInvalidationLowLevel [
 	|obj|
 	obj := picoObject send: #new.
 	self assert: (obj send: #isValid).  
@@ -183,7 +167,7 @@ PicoSmTest >> testInvalidationLowLevel [
 ]
 
 { #category : #'test - basics' }
-PicoSmTest >> testMedicalRecord [
+PicoSmTestPatientIsSource >> testMedicalRecord [
 
 	| m1 |
 	m1 := medicalRecordClass send: #new.
@@ -192,23 +176,44 @@ PicoSmTest >> testMedicalRecord [
 ]
 
 { #category : #'test - basics' }
-PicoSmTest >> testMedicalRecordIsCreatedByAPatient [
+PicoSmTestPatientIsSource >> testMedicalRecordIsCreatedByAPatientAndInvalidation [
 
-	| p1 parm m1 |
+	
+	| p1 parm m1 m2|
+	"Creation of a Patient"
 	p1 := patientClass send: #new.
 	p1 send: #name:  withArguments: { 'Dupond' }.
+
+	"Check initialization of the validity to true"
+	self assert: (p1 send: #isValid).
+
+	"Creation of the medicalRecord by the patient p1"
 	parm := IdentityDictionary new.
 	parm at: #address put: 'Belgique'.
 	parm at: #patient put: p1.
-	
 	m1 := p1 create: #SmMedicalRecord with: parm.
 	
-	self assert: (m1 send: #owner) equals: p1
+	"Check that the owner is properly set"
+	self assert: (m1 send: #owner) equals: p1.
+	"Check that the medicalRecord is valid"
+	self assert: (m1 send: #isValid).
+	
+	"Invalidating the patient source"
+	p1 send: #invalidate.
+
+	"Check that both patient and the medicalRecord are invalid"
+	self assert: (p1 send: #isValid) equals: false.
+	self assert: (m1 send: #isValid) equals: false.
+
+	"Patient creates a new medicalRecord"
+	m2 := p1 create: #SmMedicalRecord with: parm.
+	"Check that patient invalidity has propagated to the new medical record"
+	self assert: (m2 send: #isValid) equals: false.
 	
 ]
 
 { #category : #'test - basics' }
-PicoSmTest >> testMedicalRecordIsCreatedByAPatientLowLevel [
+PicoSmTestPatientIsSource >> testMedicalRecordIsCreatedByAPatientLowLevel [
 	| p m1 |
 	p := patientClass send: #new.
 	m1 := medicalRecordClass send: #new.
@@ -222,7 +227,7 @@ PicoSmTest >> testMedicalRecordIsCreatedByAPatientLowLevel [
 ]
 
 { #category : #'test - notes' }
-PicoSmTest >> testNote [
+PicoSmTestPatientIsSource >> testNote [
 
 	|note doctor|
 	note := noteClass send: #new.
@@ -237,7 +242,7 @@ PicoSmTest >> testNote [
 ]
 
 { #category : #'test - notes' }
-PicoSmTest >> testNoteContentHistoryInitialisation [
+PicoSmTestPatientIsSource >> testNoteContentHistoryInitialisation [
 
 	|note |
 	note := noteClass send: #new.
@@ -246,7 +251,31 @@ PicoSmTest >> testNoteContentHistoryInitialisation [
 ]
 
 { #category : #'test - notes' }
-PicoSmTest >> testNoteInvalidation [
+PicoSmTestPatientIsSource >> testNoteModification [
+
+	|note doctor doctor2|
+	
+	note := noteClass send: #new.
+	doctor := doctorClass send: #new.
+	doctor2 := doctorClass send: #new.
+	doctor send: #id: withArguments: { #Doctor1}.
+	doctor2 send: #id: withArguments: { #Doctor2}.
+
+	note send: #content:by: withArguments: {'Grippe' . doctor}.
+	self assert: (note send: #owner) equals: doctor.
+	note send: #content:by: withArguments: {'Grippe H1N1' . doctor2}.
+	
+	self assert: (note send: #contentHistory) size equals: 2.
+	self assert: ((note send: #content) send: #content) equals: 'Grippe H1N1'.
+	self assert: ((note send: #content) send: #owner) equals: doctor2. 
+	self assert: (note send: #owner) equals: doctor2.
+	
+	self assert: ((note send: #contentHistory) first send: #content) equals: 'Grippe'.
+	self assert: ((note send: #contentHistory) first send: #owner) equals: doctor. 
+]
+
+{ #category : #'test - notes' }
+PicoSmTestPatientIsSource >> testNoteModificationAndPartialInvalidation [
 
 	|note doctor doctor2|
 	
@@ -274,44 +303,20 @@ PicoSmTest >> testNoteInvalidation [
 		
 ]
 
-{ #category : #'test - notes' }
-PicoSmTest >> testNoteModification [
-
-	|note doctor doctor2|
-	
-	note := noteClass send: #new.
-	doctor := doctorClass send: #new.
-	doctor2 := doctorClass send: #new.
-	doctor send: #id: withArguments: { #Doctor1}.
-	doctor2 send: #id: withArguments: { #Doctor2}.
-
-	note send: #content:by: withArguments: {'Grippe' . doctor}.
-	self assert: (note send: #owner) equals: doctor.
-	note send: #content:by: withArguments: {'Grippe H1N1' . doctor2}.
-	
-	self assert: (note send: #contentHistory) size equals: 2.
-	self assert: ((note send: #content) send: #content) equals: 'Grippe H1N1'.
-	self assert: ((note send: #content) send: #owner) equals: doctor2. 
-	self assert: (note send: #owner) equals: doctor2.
-	
-	self assert: ((note send: #contentHistory) first send: #content) equals: 'Grippe'.
-	self assert: ((note send: #contentHistory) first send: #owner) equals: doctor. 
-]
-
 { #category : #'test - validity' }
-PicoSmTest >> testPicoObjectClassValidityInitialization [
+PicoSmTestPatientIsSource >> testPicoObjectClassValidityInitialization [
 
 	self assert: (picoObject  send: #isValid).  
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testSourceClassValidityInitialization [
+PicoSmTestPatientIsSource >> testSourceClassValidityInitialization [
 
 	self assert: (sourceClass send: #isValid).  
 ]
 
 { #category : #'test - basics' }
-PicoSmTest >> testSourceIdSetAndGet [
+PicoSmTestPatientIsSource >> testSourceIdSetAndGet [
 
 	| s1 |
 	s1 := sourceClass send: #new.
@@ -320,7 +325,7 @@ PicoSmTest >> testSourceIdSetAndGet [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testSourceInvalidationIsPropagating [
+PicoSmTestPatientIsSource >> testSourceInvalidationIsPropagating [
 	|source obj2|
 	source := sourceClass send: #new.
 	self assert: (source send: #isValid).  
@@ -338,14 +343,14 @@ PicoSmTest >> testSourceInvalidationIsPropagating [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testSourceValidityInitialization [
+PicoSmTestPatientIsSource >> testSourceValidityInitialization [
 	|source|
 	source := sourceClass send: #new.
 	self assert: (source send: #isValid).  
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testValidSourceCreateValidData [
+PicoSmTestPatientIsSource >> testValidSourceCreateValidData [
 	|source obj|
 	source := sourceClass send: #new.
 	self assert: (source send: #isValid).  
@@ -356,7 +361,7 @@ PicoSmTest >> testValidSourceCreateValidData [
 ]
 
 { #category : #'test - validity' }
-PicoSmTest >> testValidityInitialization [
+PicoSmTestPatientIsSource >> testValidityInitialization [
 	|obj|
 	obj := picoObject send: #new.
 	self assert: (obj send: #isValid).  

@@ -19,6 +19,7 @@ PicoFakedClassCode >> createClassNamed: aSymbol inheritsFrom: aSuperclassSymbol 
 	"At this stage Object does not exist, yet."
 	| newClass |
 	newClass := self send: #new.
+	newClass initializeValidity.
 	newClass picoClassName: aSymbol.
 	newClass picoSuperclassId: aSuperclassSymbol.
 	newClass computeIVForBootstrapOfSuperclassSymbol: aSuperclassSymbol iv: instVars.

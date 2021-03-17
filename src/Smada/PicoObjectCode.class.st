@@ -19,10 +19,10 @@ PicoObjectCode >> error: arrayOfArguments [
 	^ msg
 ]
 
-{ #category : #testing }
-PicoObjectCode >> initialize [ 
-
-	^ self
+{ #category : #'sm data' }
+PicoObjectCode >> initialize [
+	super initialize.
+	self initializeValidity.
 ]
 
 { #category : #'error handling' }
@@ -37,6 +37,11 @@ PicoObjectCode >> introspectWriteVariable: aSymbol value: aValue [
 	self at: (self offsetFromObjectOfInstanceVariable: aSymbol) put: aValue
 ]
 
+{ #category : #'sm data' }
+PicoObjectCode >> invalidate [
+	self invalidate.
+]
+
 { #category : #testing }
 PicoObjectCode >> isClass [
 
@@ -49,13 +54,25 @@ PicoObjectCode >> isMetaclass [
 	^ false
 ]
 
+{ #category : #'sm data' }
+PicoObjectCode >> isSource [
+
+	^ false
+]
+
+{ #category : #'sm data' }
+PicoObjectCode >> isValid [
+
+	^ self picoValid
+]
+
 { #category : #testing }
 PicoObjectCode >> klass [
 
 	^ self picoClass 
 ]
 
-{ #category : #testing }
+{ #category : #'sm data' }
 PicoObjectCode >> owner [
 
 	^ self picoOwner 

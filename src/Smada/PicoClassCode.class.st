@@ -34,7 +34,7 @@ PicoClassCode >> createClassNamed: aSymbol inheritsFrom: aSuperclassSymbol instV
 
 { #category : #instantiation }
 PicoClassCode >> initialize [ 
-	
+	super send: #initialize.
 	self picoClassName: #YouShouldNameMe.
 	self picoSuperclassId: #YouShouldNameMeToo.
 	self picoIVs: #().
