@@ -221,7 +221,7 @@ PicoSmTest >> testMedicalRecordIsCreatedByAPatientLowLevel [
 	self assert: m1 picoOwner equals: p
 ]
 
-{ #category : #'test - notes' }
+{ #category : #'test - note' }
 PicoSmTest >> testNote [
 
 	|note doctor|
@@ -236,7 +236,7 @@ PicoSmTest >> testNote [
 	
 ]
 
-{ #category : #'test - notes' }
+{ #category : #'test - note' }
 PicoSmTest >> testNoteContentHistoryInitialisation [
 
 	|note |
@@ -245,7 +245,7 @@ PicoSmTest >> testNoteContentHistoryInitialisation [
 	
 ]
 
-{ #category : #'test - notes' }
+{ #category : #'test - note' }
 PicoSmTest >> testNoteInvalidation [
 
 	|note doctor doctor2|
@@ -274,7 +274,7 @@ PicoSmTest >> testNoteInvalidation [
 		
 ]
 
-{ #category : #'test - notes' }
+{ #category : #'test - note' }
 PicoSmTest >> testNoteModification [
 
 	|note doctor doctor2|
@@ -302,6 +302,26 @@ PicoSmTest >> testNoteModification [
 PicoSmTest >> testPicoObjectClassValidityInitialization [
 
 	self assert: (picoObject  send: #isValid).  
+]
+
+{ #category : #'test - limited mutability' }
+PicoSmTest >> testSmStringOtherCanNotModify [
+
+	| source1 source2 aString|
+	source1 := sourceClass send: #new.
+	source2 := sourceClass send: #new.
+	aString := source1 create: #SmString with: {#content -> 'test'} asDictionary.
+	self should: [aString send: #content:modifiedBy:  withArguments: {'truc' . source2}] raise: Error.
+]
+
+{ #category : #'test - limited mutability' }
+PicoSmTest >> testSmStringOwnerCanModify [
+
+	| aSource aString|
+	aSource := sourceClass send: #new.
+	aString := aSource create: #SmString with: {#content -> 'test'} asDictionary.
+	aString send: #content:modifiedBy:  withArguments: {'truc' . aSource}.
+	self assert: (aString send: #content) equals: 'truc'
 ]
 
 { #category : #'test - validity' }

@@ -236,7 +236,7 @@ PicoBlop >> invalidate [
 	
 ]
 
-{ #category : #'smdata - collections issues' }
+{ #category : #'smdata - Collection and Boolean issues' }
 PicoBlop >> invalidateCollection: aCollection [
 
 	aCollection do:  [:each | each ifNotNil: [ each send: #invalidate]].
@@ -443,7 +443,15 @@ PicoBlop >> privateValidSetter: aBoolean [
 	
 ]
 
-{ #category : #'smdata - collections issues' }
+{ #category : #'smdata - Collection and Boolean issues' }
+PicoBlop >> restrictedModificationOf: anInstanceVariableSymbol to: aValue  by: aSource [
+
+	(self picoOwner == aSource) ifTrue: [ self setValueOfInstanceVariable: anInstanceVariableSymbol to: aValue ]
+	ifFalse: [ self error: 'Source can not modify the object as it is not its owner'  ]
+	
+]
+
+{ #category : #'smdata - Collection and Boolean issues' }
 PicoBlop >> selectValid: aCollection [
 	|validCollection|
 	validCollection := aCollection select:  [ :each | each isNotNil and: (each picoValid)].

@@ -20,6 +20,7 @@ SmStringCode >> content [
 ]
 
 { #category : #accessing }
-SmStringCode >> content: anObject [
-	content := anObject
+SmStringCode >> content: anObject modifiedBy: aSource [
+
+	self restrictedModificationOf: #content to: anObject  by: aSource
 ]
