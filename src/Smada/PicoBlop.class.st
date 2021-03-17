@@ -236,6 +236,14 @@ PicoBlop >> invalidate [
 	
 ]
 
+{ #category : #'smdata - collections issues' }
+PicoBlop >> invalidateCollection: aCollection [
+
+	aCollection do:  [:each | each ifNotNil: [ each send: #invalidate]].
+
+	
+]
+
 { #category : #lookup }
 PicoBlop >> lookup: selector [
 	"look for the method named <selector> starting in the receiver. 
@@ -310,7 +318,7 @@ PicoBlop >> offsetFromObjectOfInstanceVariable: aSymbol [
 	| aClass |
 	aClass := self picoClass.
 	(aClass picoIVs includes: aSymbol) 
-		ifFalse: [self error: 'The class ' , aClass objName asString
+		ifFalse: [self error: 'The class ' , aClass picoClassName asString
 						, ' does not define the instance variable ' , aSymbol asString].
 	^ aClass offsetFromClassOfInstanceVariable: aSymbol
 ]
@@ -431,6 +439,15 @@ PicoBlop >> privateOwnedBySetter: anOwner [
 PicoBlop >> privateValidSetter: aBoolean [
 
 	valid := aBoolean.
+
+	
+]
+
+{ #category : #'smdata - collections issues' }
+PicoBlop >> selectValid: aCollection [
+	|validCollection|
+	validCollection := aCollection select:  [ :each | each isNotNil and: (each picoValid)].
+	^ validCollection 
 
 	
 ]

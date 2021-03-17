@@ -23,9 +23,3 @@ SmStringCode >> content [
 SmStringCode >> content: anObject [
 	content := anObject
 ]
-
-{ #category : #accessing }
-SmStringCode >> owner [ 
-	
-	^ self picoOwner
-]

@@ -43,7 +43,9 @@ SmSourceCode >> initialize [
 SmSourceCode >> invalidate [
    
    super send: #invalidate.
-	(self send: #createdData) do: [:each | each ifNotNil: [ each send: #invalidate]].	
+   self invalidateCollection: (self send: #createdData).
+	" Following line, especially the 'do:', can not be interpreted by Champollion. Therefore I implemented a primitive in PicoBlop that can call Pharo's do:
+	(self send: #createdData) do: [:each | each ifNotNil: [ each send: #invalidate]]."
 		
 ]
 

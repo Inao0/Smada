@@ -10,7 +10,9 @@ Class {
 
 { #category : #accessing }
 SmNoteCode >> content [
-	^contentHistory last
+"^ contentHistory last"
+	"^ ((self collectValid: contentHistory) last)."
+ 	^ (self selectValid: contentHistory) last. 
 
 ]
 
@@ -35,7 +37,7 @@ SmNoteCode >> initialize [
 { #category : #accessing }
 SmNoteCode >> owner [
 	"This overides the (primitive?) owner we defined in PicoSmTest and return the owner of the last version. This could also be implemented by having a 'currentOwner' method. I chose to do it that way for ease of manipulation, similar to content, that return the last version only"	
-		^ (contentHistory last) send: #owner.
+		^ (self selectValid: contentHistory) last send: #owner
 		"Is is the rigth level for using send: ?"
 
 ]

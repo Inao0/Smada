@@ -9,7 +9,8 @@ Class {
 		'patientClass',
 		'medicalRecordClass',
 		'noteClass',
-		'stringClass'
+		'stringClass',
+		'socialSecurityNumberClass'
 	],
 	#category : #'Smada-Sm Example'
 }
@@ -214,6 +215,35 @@ PicoSmTest >> testNoteContentHistoryInitialisation [
 	note := noteClass send: #new.
 	self assert: (note send: #contentHistory) class equals: OrderedCollection
 	
+]
+
+{ #category : #'test - notes' }
+PicoSmTest >> testNoteInvalidation [
+
+	|note doctor doctor2|
+	
+	note := noteClass send: #new.
+	doctor := doctorClass send: #new.
+	doctor2 := doctorClass send: #new.
+	doctor send: #id: withArguments: { #Doctor1}.
+	doctor2 send: #id: withArguments: { #Doctor2}.
+
+	note send: #content:by: withArguments: {'Grippe' . doctor}.
+	self assert: (note send: #owner) equals: doctor.
+	note send: #content:by: withArguments: {'Grippe H1N1' . doctor2}.
+	
+	self assert: (note send: #contentHistory) size equals: 2.
+	self assert: ((note send: #content) send: #content) equals: 'Grippe H1N1'.
+	self assert: ((note send: #content) send: #owner) equals: doctor2. 
+	self assert: (note send: #owner) equals: doctor2.
+	
+	self assert: ((note send: #contentHistory) first send: #content) equals: 'Grippe'.
+	self assert: ((note send: #contentHistory) first send: #owner) equals: doctor. 
+	
+	doctor2 send: #invalidate.
+	self assert: ((note send: #content) send: #content) equals: 'Grippe'.
+	self assert: (note send: #owner) equals: doctor.
+		
 ]
 
 { #category : #'test - notes' }
